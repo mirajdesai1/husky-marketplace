@@ -1,4 +1,4 @@
-import ProfileCollection from '../database/ProfileCollection';
+import ProfileCollection from '../../database/ProfileCollection';
 import { Filter, Document } from 'mongodb';
 
 export interface IUserProfile {
@@ -9,6 +9,7 @@ export interface IUserProfile {
     userId: string;
     picture: string;
     pendingFriendRequests: Array<string>;
+    banner: string;
 }
 
 

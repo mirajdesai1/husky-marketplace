@@ -1,7 +1,7 @@
 import { Request, Response, Express } from "express";
 import { getAuthId, checkJwt } from "../../Utils";
 import axios from "axios";
-import { IUserProfile, profileCreateHandler, profileGetHandler } from "../ProfileRequestHandlers";
+import { IUserProfile, profileCreateHandler, profileGetHandler } from "./ProfileRequestHandlers";
 
 const createProfile = async (req: Request, res: Response) => {
     const userId = getAuthId(req);
@@ -21,6 +21,7 @@ const createProfile = async (req: Request, res: Response) => {
             "picture": prof.data.picture,
             "bio": "No information provided",
             "pendingFriendRequests": [],
+            "banner": "https://media.licdn.com/dms/image/C4D12AQHMPBvE3avWzg/article-inline_image-shrink_1000_1488/0/1616872522462?e=1686182400&v=beta&t=Pr3elSNZK8egLBUg78EFAEuEiJHB9wDvWZaX7EbeuVw"
         }
         await profileCreateHandler(userProf);
         res.status(201).json(userProf);
