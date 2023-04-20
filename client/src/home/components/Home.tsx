@@ -4,8 +4,6 @@ import SearchBar from '../../search/components/searchBar';
 const Home = () => {
   return (
     <>
-      {/* <PrimarySearchAppBar />
-      <SearchBar /> */}
     </>
   );
 };
