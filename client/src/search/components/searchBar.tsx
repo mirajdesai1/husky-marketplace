@@ -1,36 +1,24 @@
+import * as React from 'react';
+
 import { useCallback, useState } from 'react';
 import youtubeAPI from '../../api/youtubeAPI';
-
+import { Link } from 'react-router-dom';
 
 const SearchBar = () => {
-    const [searchTerm, setSearchTerm] = useState("")
-    const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
-    const fetchVideos = useCallback(() => {
-        youtubeAPI.get('/search', {
-            params: {
-                q: searchTerm
-            }
-        }).then(resp => {
-            setSearchResults(resp.data.items)
-
-        }).catch(e => console.log(e))
-    }, [searchTerm])
-
-    return (
-        <div>
-            <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}></input>
-            <button onClick={fetchVideos} >Search</button>
-            {searchResults.map((searchResult, index) => {
-                return (
-                    <div>
-                        <img src={(searchResult as any).snippet.thumbnails.high.url}></img>
-                    </div>
-                )
-            })}
-        </div>
-    )
-
-}
+  return (
+    <div>
+      <input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      ></input>
+      <Link to={`search/${encodeURI(searchTerm)}`}>
+        <button>Search</button>
+      </Link>
+    </div>
+  );
+};
 
 export default SearchBar;
