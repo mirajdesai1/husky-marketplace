@@ -1,8 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Login from './components/Login';
-import SearchBar from './search/components/searchBar';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router';
 import Home from './home/components/Home';
