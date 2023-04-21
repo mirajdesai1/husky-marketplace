@@ -10,8 +10,16 @@ export interface IUserProfile {
     picture: string;
     pendingFriendRequests: Array<string>;
     banner: string;
+    friends: Array<string>;
 }
 
+export interface IUserPublicProfile {
+    name: string;
+    username: string;
+    bio: string;
+    picture: string;
+    banner: string;
+}
 
 export async function profileCreateHandler(
     requestData: IUserProfile
