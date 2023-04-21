@@ -158,8 +158,10 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }} marginBottom={4}>
-      <AppBar position="static">
+    // <Box sx={{ flexGrow: 1 }} marginBottom={4}>
+      /* <AppBar position="static"> */
+
+      <>
         <Toolbar>
           <IconButton
             size="large"
@@ -215,9 +217,9 @@ export default function PrimarySearchAppBar() {
             </IconButton>
           </Box>
         </Toolbar>
-      </AppBar>
+      {/* </AppBar> */}
       {renderMobileMenu}
       {renderMenu}
-    </Box>
+    </>
   );
 }
