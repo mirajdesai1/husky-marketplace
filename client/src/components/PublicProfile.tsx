@@ -12,7 +12,7 @@ function PublicProfile() {
   const [profileDetails, setProfileDetails] =
     useState<IUserPublicProfile | null>(null);
   const { username } = useParams();
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -23,17 +23,21 @@ function PublicProfile() {
     fetchProfile().catch((e) => console.log(e));
   }, [username]);
 
-
   if (user?.nickname === username) {
-    return (
-      <UserProfile />
-    )
-  } 
+    return <UserProfile />;
+  }
+
+  const sendInvite = async () => {
+    const token = await getAccessTokenSilently();
+    if (profileDetails) {
+      service.sendFriendInvite(token, profileDetails.username);
+    }
+  };
 
   return (
     <>
-      {profileDetails 
-        ? <div className="container">
+      {profileDetails ? (
+        <div className="container">
           <img
             src={profileDetails?.banner}
             width="100%"
@@ -55,11 +59,20 @@ function PublicProfile() {
               <h5 className="text-muted">@{profileDetails?.username}</h5>
               <p className="lead">{profileDetails?.bio}</p>
             </div>
-            {isAuthenticated && <button type="button" className="btn btn-primary ms-auto align-self-baseline">Send Friend Invite</button>}
-            
+            {isAuthenticated && (
+              <button
+                type="button"
+                className="btn btn-primary ms-auto align-self-baseline"
+                onClick={sendInvite}
+              >
+                Send Friend Invite
+              </button>
+            )}
           </div>
         </div>
-      : <h1>No profile found</h1>}
+      ) : (
+        <h1>No profile found</h1>
+      )}
     </>
   );
 }

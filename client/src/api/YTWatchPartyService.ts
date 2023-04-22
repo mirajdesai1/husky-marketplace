@@ -48,7 +48,7 @@ export default class YTWatchPartyService {
 
   async getFriends(token: string): Promise<Array<IUserPublicProfile>> {
     return (
-      await this._axios.get('/api/friends', {
+      await this._axios.get("/api/friends", {
         headers: { Authorization: `Bearer ${token}` },
       })
     ).data.friends;
@@ -56,9 +56,35 @@ export default class YTWatchPartyService {
 
   async getFriendInvites(token: string): Promise<Array<IUserPublicProfile>> {
     return (
-      await this._axios.get('/api/friends/invite', {
+      await this._axios.get("/api/friends/invite", {
         headers: { Authorization: `Bearer ${token}` },
       })
     ).data.invites;
+  }
+
+  async acceptFriendInvite(
+    token: string,
+    username: string
+  ): Promise<[IUserProfile | null, IUserProfile | null]> {
+    return (
+      await this._axios.post(
+        `/api/friends/${username}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+    ).data;
+  }
+
+  async sendFriendInvite(
+    token: string,
+    username: string,
+  ): Promise<IUserProfile | null> {
+    return (
+      await this._axios.post(
+        `/api/friends/invite/${username}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+    ).data;
   }
 }

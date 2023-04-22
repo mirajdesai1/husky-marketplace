@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
-import YTWatchPartyService, { IUserPublicProfile } from "../api/YTWatchPartyService";
+import React from "react";
+import { Link } from "react-router-dom";
+import { IUserPublicProfile } from "../api/YTWatchPartyService";
 
-const service = new YTWatchPartyService();
-
-function Friend({prof}: any) {
+function Friend({profile}: {profile: IUserPublicProfile}) {
   return (
     <>
       <div className="d-flex">
-        <img src={prof.picture} alt="friend" width={50} height={50}></img>
-        <div className="text-start ms-1">
-          <div>{prof.name}</div>
-          <div className="text-muted">@{prof.username}</div>
-        </div>
+        <Link to={`/profile/${profile.username}`}>
+          <img src={profile.picture} alt="friend" width={50} height={50}></img>
+        </Link>
+        <Link to={`/profile/${profile.username}`}>
+          <div className="text-start ms-1">
+            <div>{profile.name}</div>
+            <div className="text-muted">@{profile.username}</div>
+          </div>
+        </Link>
       </div>
-      <button type="button" className="btn btn-primary mt-1">Accept Invite</button>
     </>
   )
 }
