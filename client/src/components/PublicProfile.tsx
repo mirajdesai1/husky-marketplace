@@ -39,6 +39,7 @@ function PublicProfile() {
             width="100%"
             height="200"
             alt="profile banner"
+            referrerPolicy="no-referrer"
           />
           <div className="d-flex mt-3 ms-5 me-5">
             <img
