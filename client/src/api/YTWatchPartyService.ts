@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import youtubeAPI from "./youtubeAPI";
 
 export interface IUserPublicProfile {
   name: string;
@@ -18,6 +19,12 @@ export interface IUserProfile {
   pendingFriendRequests: Array<string>;
   banner: string;
   friends: Array<string>;
+}
+
+export interface IRecommendation {
+  fromUsername: string;
+  toUsername: string;
+  videoID: string
 }
 
 export default class YTWatchPartyService {
@@ -60,5 +67,26 @@ export default class YTWatchPartyService {
         headers: { Authorization: `Bearer ${token}` },
       })
     ).data.invites;
+  }
+
+  getRecommendationsPromise(token: string) {
+    return (
+      this._axios.get<Array<IRecommendation>>('/api/recommendations', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    )
+  }
+
+  getVideoPromise(videoID: string) {
+    return (
+      youtubeAPI
+        .get<GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>>('/videos', {
+          params: {
+            id: videoID,
+            part: 'snippet,contentDetails,statistics',
+            maxResults: 1,
+          },
+        })
+    )
   }
 }

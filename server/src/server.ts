@@ -5,6 +5,7 @@ import { checkJwt } from "./Utils";
 import ProfileController from "./controllers/profile/ProfileController";
 import { config } from "dotenv";
 import FriendsController from "./controllers/friends/FriendsController";
+import RecommendationsController from "./controllers/recommendations/RecommendationsController";
 
 config();
 
@@ -29,5 +30,6 @@ app.get('/api/private', checkJwt, function (req, res) {
 
 ProfileController(app);
 FriendsController(app);
+RecommendationsController(app);
 
 app.listen(process.env.PORT || 8081);
