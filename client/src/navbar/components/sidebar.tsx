@@ -21,10 +21,26 @@ import Home from '../../home/components/Home';
 import PublicProfile from '../../components/PublicProfile';
 import UserProfile from '../../components/UserProfile';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { useState } from 'react';
+import { IUserPublicProfile } from '../../api/YTWatchPartyService';
 
 const drawerWidth = 240;
 
 export default function PermanentDrawerLeft() {
+
+    const [friends, setFriends] = useState<IUserPublicProfile[]>([]);
+
+
+    // useEffect(() => {
+
+
+    // }, [])
+
+
+
+
+
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
