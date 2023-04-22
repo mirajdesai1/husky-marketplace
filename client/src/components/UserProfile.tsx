@@ -60,6 +60,7 @@ function UserProfile({active ='pending'}) {
               width="150"
               height="150"
               alt="user avatar"
+              referrerPolicy="no-referrer"
             />
             <div className="ms-3 text-start">
               <span><span className="h3">{profileDetails.name} &middot;</span> <span className="text-muted h5">{profileDetails.email}</span></span>

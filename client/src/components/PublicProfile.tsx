@@ -48,6 +48,7 @@ function PublicProfile() {
               width="150"
               height="150"
               alt="user avatar"
+              referrerPolicy="no-referrer"
             />
             <div className="ms-3 text-start w-50">
               <h3>{profileDetails?.name}</h3>
