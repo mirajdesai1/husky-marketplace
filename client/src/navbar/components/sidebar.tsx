@@ -88,7 +88,7 @@ export default function PermanentDrawerLeft() {
           <Route index path="/*" element={<Home />} />
           <Route path="/video/:videoID" element={<VideoDetail />} />
           <Route path="/search/:searchTerm" element={<SearchResult />} />
-          <Route path="/profile" Component={withAuthenticationRequired(UserProfile)} />
+          <Route path="/profile" Component={withAuthenticationRequired(() => UserProfile({active:'featured'}))} />
           <Route path="/profile/:username" element={<PublicProfile />} />
           <Route path="/profile/:username/pending" element={<UserProfile active='pending' />} />
           <Route path="/profile/:username/featured" element={<UserProfile active='featured' />} />
