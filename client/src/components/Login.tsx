@@ -3,7 +3,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 function Login() {
     const {
-        user,
         isAuthenticated,
         loginWithRedirect,
         logout,
@@ -15,8 +14,6 @@ function Login() {
                 returnTo: window.location.origin,
             }
         });
-    
-    console.log(user)
 
     return (
         <>
