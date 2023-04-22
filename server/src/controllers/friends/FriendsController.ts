@@ -19,7 +19,7 @@ const acceptFriendInvite = async (req: Request, res: Response) => {
   const friendUsername = req.params.username;
 
   const updatedProfs = await friendsAcceptHandler(thisUserId, friendUsername);
-  res.status(200).json({ updatedProfs });
+  res.status(200).json(updatedProfs);
 };
 
 const sendFriendInvite = async (req: Request, res: Response) => {

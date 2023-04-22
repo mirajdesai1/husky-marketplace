@@ -20,26 +20,30 @@ import SearchResult from '../../search/components/searchResult';
 import Home from '../../home/components/Home';
 import PublicProfile from '../../components/PublicProfile';
 import UserProfile from '../../components/UserProfile';
-import { withAuthenticationRequired } from '@auth0/auth0-react';
-import { useState } from 'react';
-import { IUserPublicProfile } from '../../api/YTWatchPartyService';
+import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
+import YTWatchPartyService, {
+  IUserPublicProfile,
+} from '../../api/YTWatchPartyService';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
+const service = new YTWatchPartyService();
+
 export default function PermanentDrawerLeft() {
+  const [friends, setFriends] = useState<IUserPublicProfile[]>([]);
+  const { getAccessTokenSilently } = useAuth0();
 
-    const [friends, setFriends] = useState<IUserPublicProfile[]>([]);
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const token = await getAccessTokenSilently();
+      const friendsProfiles = await service.getFriends(token);
+      setFriends(friendsProfiles);
+    };
 
-
-    // useEffect(() => {
-
-
-    // }, [])
-
-
-
-
-
+    fetchFriends().catch((e) => console.log(e));
+  }, [getAccessTokenSilently]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -48,7 +52,7 @@ export default function PermanentDrawerLeft() {
         position="fixed"
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
       >
-        <PrimarySearchAppBar/>
+        <PrimarySearchAppBar />
         {/* <Toolbar>
           <Typography variant="h6" noWrap component="div">
             Permanent drawer
@@ -70,15 +74,18 @@ export default function PermanentDrawerLeft() {
         <Toolbar />
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding>
+            <Typography variant='h6' textAlign={'left'} marginLeft={2}>Friends</Typography>
+          {friends.map((friend, index) => (
+            <Link to={`/profile/${friend.username}`}>
+            <ListItem key={friend.username} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <img style={{borderRadius: '50%'}} width={50} height={50} src={friend.picture} alt='profile'></img>
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={friend.username} />
               </ListItemButton>
             </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />
@@ -99,17 +106,25 @@ export default function PermanentDrawerLeft() {
         component="main"
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       >
-        <Toolbar/>
+        <Toolbar />
         <Routes>
           <Route index path="/*" element={<Home />} />
           <Route path="/video/:videoID" element={<VideoDetail />} />
           <Route path="/search/:searchTerm" element={<SearchResult />} />
-          <Route path="/profile" Component={withAuthenticationRequired(UserProfile)} />
+          <Route
+            path="/profile"
+            Component={withAuthenticationRequired(UserProfile)}
+          />
           <Route path="/profile/:username" element={<PublicProfile />} />
-          <Route path="/profile/:username/pending" element={<UserProfile active='pending' />} />
-          <Route path="/profile/:username/featured" element={<UserProfile active='featured' />} />
+          <Route
+            path="/profile/:username/pending"
+            element={<UserProfile active="pending" />}
+          />
+          <Route
+            path="/profile/:username/featured"
+            element={<UserProfile active="featured" />}
+          />
         </Routes>
-        
       </Box>
     </Box>
   );

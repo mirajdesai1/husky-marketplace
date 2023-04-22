@@ -17,12 +17,26 @@ function FriendsTab() {
 
     fetchFriends().catch((e) => console.log(e));
   }, [getAccessTokenSilently])
-  console.log(friends)
+
+  const acceptInvite = async (friendUsername: string) => {
+    const token = await getAccessTokenSilently();
+    await service.acceptFriendInvite(token, friendUsername);
+    setFriends(friends.filter((f) => f.username !== friendUsername))
+  }
+
   return (
     <>
       <ul className="list-group list-group-horizontal flex-fill">
-        {friends.map((f) => <li className="list-group-item">
-          <Friend prof={f} />
+        {friends.map((f) =>
+        <li className="list-group-item">
+          <Friend profile={f} />
+          <button
+            type="button"
+            className="btn btn-primary mt-1"
+            onClick={() => acceptInvite(f.username)}
+          >
+            Accept Invite
+          </button>
         </li>)}
       </ul>
     </>

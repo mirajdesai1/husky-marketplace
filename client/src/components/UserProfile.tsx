@@ -6,18 +6,18 @@ import FriendsTab from "./FriendsTab";
 
 const service = new YTWatchPartyService();
 
-function UserProfile({active ='pending'}) {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
+function UserProfile({ active = "pending" }) {
+  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
+    useAuth0();
   const [profileDetails, setProfileDetails] = useState<IUserProfile | null>(
     null
   );
   const [bio, setBio] = useState<string>("");
 
-
   useEffect(() => {
     const fetchProfile = async () => {
       const token = await getAccessTokenSilently();
-      const prof = await service.getUserProfile(token)
+      const prof = await service.getUserProfile(token);
       setProfileDetails(prof);
       setBio(prof.bio);
     };
@@ -27,25 +27,24 @@ function UserProfile({active ='pending'}) {
 
   const bioSubmit = async () => {
     const token = await getAccessTokenSilently();
-    await service.updateProfile(token, {bio});
+    await service.updateProfile(token, { bio });
   };
 
   const renderComponent = (a: string) => {
-    switch(a) {
-      case 'pending':
+    switch (a) {
+      case "pending":
         return <FriendsTab />;
-      case 'featured':
+      case "featured":
         return <></>;
       default:
         return <></>;
-
     }
-  }
+  };
 
   return (
     <>
-      {profileDetails
-        ? <div className="container">
+      {profileDetails ? (
+        <div className="container">
           <img
             src={profileDetails?.banner}
             width="100%"
@@ -63,25 +62,53 @@ function UserProfile({active ='pending'}) {
               referrerPolicy="no-referrer"
             />
             <div className="ms-3 text-start">
-              <span><span className="h3">{profileDetails.name} &middot;</span> <span className="text-muted h5">{profileDetails.email}</span></span>
+              <span>
+                <span className="h3">{profileDetails.name} &middot;</span>{" "}
+                <span className="text-muted h5">{profileDetails.email}</span>
+              </span>
               <h5 className="text-muted">@{profileDetails.username}</h5>
-              <textarea className="form-control lead" cols={500} rows={5} value={bio} onChange={(e) => setBio(e.target.value)}></textarea>
-              <button type="button" className="btn btn-primary" onClick={bioSubmit}>Submit</button>
+              <textarea
+                className="form-control lead"
+                cols={500}
+                rows={5}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              ></textarea>
+              <button
+                type="button"
+                className="btn btn-primary mt-1"
+                onClick={bioSubmit}
+              >
+                Submit
+              </button>
             </div>
           </div>
           <div className="mt-2 ms-5 me-5">
             <ul className="nav nav-tabs">
               <li className="nav-item">
-                <Link className={`nav-link ${active === 'featured' && 'active'}`} aria-current="page" to={`/profile/${profileDetails.username}/featured`}>Home</Link>
+                <Link
+                  className={`nav-link ${active === "featured" && "active"}`}
+                  aria-current="page"
+                  to={`/profile/${profileDetails.username}/featured`}
+                >
+                  Home
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${active === 'pending' && 'active'}`} to={`/profile/${profileDetails.username}/pending`}>Pending Friend Invites</Link>
+                <Link
+                  className={`nav-link ${active === "pending" && "active"}`}
+                  to={`/profile/${profileDetails.username}/pending`}
+                >
+                  Pending Friend Invites
+                </Link>
               </li>
             </ul>
             {renderComponent(active)}
           </div>
         </div>
-      : <h1>Loading ...</h1>}
+      ) : (
+        <h1>Loading ...</h1>
+      )}
     </>
   );
 }

@@ -34,31 +34,36 @@ const Home = () => {
     Array<GoogleApiYouTubeVideoResource>
   >([]);
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   const fetchData = useCallback(async () => {
-    const token = await getAccessTokenSilently();
-    const getRecommendationsPromise = service.getRecommendationsPromise(token);
+    let getRecommendationsPromise = null;
 
-    const [popularVideos, recommendations] = await Promise.all([
-      fetchTrendingPromise,
-      getRecommendationsPromise,
-    ]);
-    setPopularVideos(popularVideos.data.items);
+    if (isAuthenticated) {
+      const token = await getAccessTokenSilently();
+      getRecommendationsPromise = service.getRecommendationsPromise(token);
+      const [popularVideos, recommendations] = await Promise.all([
+        fetchTrendingPromise,
+        getRecommendationsPromise,
+      ]);
+      setPopularVideos(popularVideos.data.items);
 
-    console.log({ recommendations });
-    const videoIDs = recommendations.data.map((item) => item.videoID);
+      const videoIDs = recommendations.data.map((item) => item.videoID);
 
-    const getVideoPromises = videoIDs.map((videoID) =>
-      service.getVideoPromise(videoID)
-    );
+      const getVideoPromises = videoIDs.map((videoID) =>
+        service.getVideoPromise(videoID)
+      );
 
-    const recommendedVideos = (await Promise.all(getVideoPromises)).map(
-      (item) => item.data.items[0]
-    );
+      const recommendedVideos = (await Promise.all(getVideoPromises)).map(
+        (item) => item.data.items[0]
+      );
 
-    setRecommendations(recommendedVideos);
-  }, [getAccessTokenSilently]);
+      setRecommendations(recommendedVideos);
+    } else {
+      const [popularVideos] = await Promise.all([fetchTrendingPromise]);
+      setPopularVideos(popularVideos.data.items);
+    }
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   useEffect(() => {
     fetchData();
