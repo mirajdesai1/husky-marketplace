@@ -10,7 +10,7 @@ const Home = () => {
 
   const fetchPopularVideos = useCallback(() => {
     youtubeAPI
-      .get('/search', {
+      .get('/videos', {
         params: {
           chart: 'mostPopular',
           part: 'snippet',
@@ -60,7 +60,7 @@ const Home = () => {
         {popularVideos.map((searchResult: any) => {
           return (
             <div>
-            <Link to={`/video/${searchResult.id.videoId}`}>
+            <Link to={`/video/${searchResult.id}`}>
               <img
                 style={{objectFit: 'cover', borderRadius: '5%', marginRight: '30px'}}
                 width={150}
