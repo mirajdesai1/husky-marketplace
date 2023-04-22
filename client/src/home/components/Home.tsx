@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import PrimarySearchAppBar from '../../navbar/components/navbar';
 import SearchBar from '../../search/components/searchBar';
 import youtubeAPI from '../../api/youtubeAPI';
-import { Skeleton } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
@@ -46,19 +46,23 @@ const Home = () => {
 
   return (
     <div>
+        <Typography variant='h4' textAlign={'left'} fontFamily={'sans-serif'}>Popular Videos</Typography>
+        <hr></hr>
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-around',
+          overflowY: 'scroll',
+          whiteSpace: 'inherit'
         }}
       >
-        {popularVideos.slice(0, 6).map((searchResult: any) => {
+        {popularVideos.map((searchResult: any) => {
           return (
             <div>
             <Link to={`/video/${searchResult.id.videoId}`}>
               <img
-                style={{objectFit: 'cover', borderRadius: '5%'}}
+                style={{objectFit: 'cover', borderRadius: '5%', marginRight: '30px'}}
                 width={150}
                 height={150}
                 alt="video"
