@@ -115,4 +115,14 @@ export default class YTWatchPartyService {
       )
     ).data;
   }
+
+  async deleteFriend(
+    token: string,
+    username: string,
+  ): Promise<void> {
+    await this._axios.delete(
+      `/api/friends/${username}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+  }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import YTWatchPartyService, {
+  IUserProfile,
   IUserPublicProfile,
 } from "../api/YTWatchPartyService";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -11,6 +12,7 @@ const service = new YTWatchPartyService();
 function PublicProfile() {
   const [profileDetails, setProfileDetails] =
     useState<IUserPublicProfile | null>(null);
+  const [currUserProf, setCurrUserProf] = useState<IUserProfile | null>(null);
   const { username } = useParams();
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
@@ -20,8 +22,16 @@ function PublicProfile() {
         setProfileDetails(await service.getPublicProfile(username));
       }
     };
+
+    const fetchMyProfile = async () => {
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        setCurrUserProf(await service.getUserProfile(token));
+      }
+    };
     fetchProfile().catch((e) => console.log(e));
-  }, [username]);
+    fetchMyProfile().catch((e) => console.log(e));
+  }, [username, getAccessTokenSilently, isAuthenticated]);
 
   if (user?.nickname === username) {
     return <UserProfile />;
@@ -31,6 +41,48 @@ function PublicProfile() {
     const token = await getAccessTokenSilently();
     if (profileDetails) {
       service.sendFriendInvite(token, profileDetails.username);
+    }
+  };
+
+  const removeFriend = async () => {
+    const token = await getAccessTokenSilently();
+
+    if (username) {
+      if (currUserProf) {
+        const newProf = {
+          ...currUserProf,
+          friends: currUserProf.friends.filter((f) => f !== username),
+        };
+        setCurrUserProf(newProf);
+      }
+      service.deleteFriend(token, username);
+    }
+  };
+
+  const renderFriendButton = () => {
+    if (isAuthenticated) {
+      if (currUserProf && username) {
+        if (currUserProf.friends.includes(username)) {
+          return (
+            <button
+              type="button"
+              className="btn btn-danger ms-auto align-self-baseline"
+              onClick={removeFriend}
+            >
+              Unfriend
+            </button>
+          );
+        }
+        return (
+          <button
+            type="button"
+            className="btn btn-primary ms-auto align-self-baseline"
+            onClick={sendInvite}
+          >
+            Send Friend Invite
+          </button>
+        );
+      }
     }
   };
 
@@ -59,15 +111,7 @@ function PublicProfile() {
               <h5 className="text-muted">@{profileDetails?.username}</h5>
               <p className="lead">{profileDetails?.bio}</p>
             </div>
-            {isAuthenticated && (
-              <button
-                type="button"
-                className="btn btn-primary ms-auto align-self-baseline"
-                onClick={sendInvite}
-              >
-                Send Friend Invite
-              </button>
-            )}
+            {renderFriendButton()}
           </div>
         </div>
       ) : (
