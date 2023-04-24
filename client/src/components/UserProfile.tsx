@@ -40,7 +40,7 @@ function UserProfile({ active = "pending" }) {
         return <FriendsTab />;
       case "featured":
         if (profileDetails) {
-          return <LikedVideosTab userId={profileDetails.userId} />;
+          return <LikedVideosTab />;
         }
         break;
       default:
