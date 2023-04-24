@@ -25,8 +25,8 @@ const createRecommendation = async (req: Request, res: Response) => {
     videoID,
   };
 
-  await recommendationCreateHandler(recommendation);
-  res.status(200);
+  const insertSuccess = await recommendationCreateHandler(recommendation);
+  res.sendStatus(insertSuccess ? 200 : 400);
 };
 
 const getRecommendations = async (req: Request, res: Response) => {

@@ -19,7 +19,6 @@ function Login() {
     });
 
   const onLogin = useCallback(async () => {
-    console.log('in on login');
     loginWithRedirect();
 
   }, [loginWithRedirect]);

@@ -26,24 +26,25 @@ import YTWatchPartyService, {
   IUserPublicProfile,
 } from '../../api/YTWatchPartyService';
 import { Link } from 'react-router-dom';
+import useFetchFriends from '../../hooks/useFetchFriends';
+import FriendSection from './friendsSection';
 
 const drawerWidth = 240;
 
 const service = new YTWatchPartyService();
 
 export default function PermanentDrawerLeft() {
-  const [friends, setFriends] = useState<IUserPublicProfile[]>([]);
-  const { getAccessTokenSilently } = useAuth0();
+  //const { getAccessTokenSilently } = useAuth0();
 
-  useEffect(() => {
-    const fetchFriends = async () => {
-      const token = await getAccessTokenSilently();
-      const friendsProfiles = await service.getFriends(token);
-      setFriends(friendsProfiles);
-    };
+//   useEffect(() => {
+//     const fetchFriends = async () => {
+//       const token = await getAccessTokenSilently();
+//       const friendsProfiles = await service.getFriends(token);
+//       setFriends(friendsProfiles);
+//     };
 
-    fetchFriends().catch((e) => console.log(e));
-  }, [getAccessTokenSilently]);
+//     fetchFriends().catch((e) => console.log(e));
+//   }, [getAccessTokenSilently]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -73,21 +74,7 @@ export default function PermanentDrawerLeft() {
       >
         <Toolbar />
         <Divider />
-        <List>
-            <Typography variant='h6' textAlign={'left'} marginLeft={2}>Friends</Typography>
-          {friends.map((friend, index) => (
-            <Link to={`/profile/${friend.username}`}>
-            <ListItem key={friend.username} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <img style={{borderRadius: '50%'}} width={50} height={50} src={friend.picture} alt='profile'></img>
-                </ListItemIcon>
-                <ListItemText primary={friend.username} />
-              </ListItemButton>
-            </ListItem>
-            </Link>
-          ))}
-        </List>
+        <FriendSection/>
         <Divider />
         <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (

@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import youtubeAPI from "./youtubeAPI";
+import axios, { AxiosInstance } from 'axios';
+import youtubeAPI from './youtubeAPI';
 
 export interface IUserPublicProfile {
   name: string;
@@ -24,14 +24,14 @@ export interface IUserProfile {
 export interface IRecommendation {
   fromUsername: string;
   toUsername: string;
-  videoID: string
+  videoID: string;
 }
 
 export default class YTWatchPartyService {
   private _axios: AxiosInstance;
 
   constructor() {
-    const baseURL = "http://localhost:8081";
+    const baseURL = 'http://localhost:8081';
     this._axios = axios.create({ baseURL });
   }
 
@@ -55,7 +55,7 @@ export default class YTWatchPartyService {
 
   async getFriends(token: string): Promise<Array<IUserPublicProfile>> {
     return (
-      await this._axios.get("/api/friends", {
+      await this._axios.get('/api/friends', {
         headers: { Authorization: `Bearer ${token}` },
       })
     ).data.friends;
@@ -63,33 +63,47 @@ export default class YTWatchPartyService {
 
   async getFriendInvites(token: string): Promise<Array<IUserPublicProfile>> {
     return (
-      await this._axios.get("/api/friends/invite", {
+      await this._axios.get('/api/friends/invite', {
         headers: { Authorization: `Bearer ${token}` },
       })
     ).data.invites;
   }
 
   getRecommendationsPromise(token: string) {
-    return (
-      this._axios.get<Array<IRecommendation>>('/api/recommendations', {
+    return this._axios.get<Array<IRecommendation>>('/api/recommendations', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  createRecommendationsPromise(
+    token: string,
+    toUsername: string,
+    videoID: string
+  ) {
+    return this._axios.post(
+      '/api/recommendations',
+      {
+        toUsername,
+        videoID,
+      },
+      {
         headers: { Authorization: `Bearer ${token}` },
-      })
-    )
+      }
+    );
   }
 
   getVideoPromise(videoID: string) {
-    return (
-      youtubeAPI
-        .get<GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>>('/videos', {
-          params: {
-            id: videoID,
-            part: 'snippet,contentDetails,statistics',
-            maxResults: 1,
-          },
-        })
-    )
+    return youtubeAPI.get<
+      GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>
+    >('/videos', {
+      params: {
+        id: videoID,
+        part: 'snippet,contentDetails,statistics',
+        maxResults: 1,
+      },
+    });
   }
-  
+
   async acceptFriendInvite(
     token: string,
     username: string
@@ -105,7 +119,7 @@ export default class YTWatchPartyService {
 
   async sendFriendInvite(
     token: string,
-    username: string,
+    username: string
   ): Promise<IUserProfile | null> {
     return (
       await this._axios.post(

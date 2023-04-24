@@ -58,7 +58,9 @@ const Home = () => {
         (item) => item.data.items[0]
       );
 
-      setRecommendations(recommendedVideos);
+      console.log({recommendedVideos});
+
+      setRecommendations(recommendedVideos.filter(item => !!item));
     } else {
       const [popularVideos] = await Promise.all([fetchTrendingPromise]);
       setPopularVideos(popularVideos.data.items);
@@ -111,8 +113,8 @@ const Home = () => {
                     borderRadius: '5%',
                     marginRight: '30px',
                   }}
-                  width={150}
-                  height={150}
+                  width={300}
+                  height={175}
                   alt="video"
                   src={(searchResult as any).snippet.thumbnails.high.url}
                 ></img>
@@ -135,6 +137,7 @@ const Home = () => {
         }}
       >
         {recommendations.map((recommendation) => {
+            console.log("RECC", recommendation);
           return (
             <div>
               <Link to={`/video/${recommendation.id}`}>

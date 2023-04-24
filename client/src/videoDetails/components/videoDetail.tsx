@@ -3,12 +3,14 @@ import { useParams } from 'react-router';
 import youtubeAPI from '../../api/youtubeAPI';
 import { Button, Skeleton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import BasicModal from './sendFriendModal';
 
 type VideoDetailPropType = {
   videoID: string;
 };
 
 const VideoDetail = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [videoInfo, setVideoInfo] = useState({} as any);
   const { videoID } = useParams();
 
@@ -36,14 +38,13 @@ const VideoDetail = () => {
       return <Skeleton />;
     }
     return (
+      <>
       <div>
         <h1>{videoInfo.snippet.title}</h1>
         <h2>{`Views: ${videoInfo.statistics.viewCount}`}</h2>
         <h2>{`Likes: ${videoInfo.statistics.likeCount}`}</h2>
-        <Button variant="contained" endIcon={<SendIcon />}>
-          Send
-        </Button>
       </div>
+      </>
     );
   };
 
@@ -60,6 +61,7 @@ const VideoDetail = () => {
       ></iframe>
 
       {renderVideoDetails()}
+      <BasicModal videoID={videoID || ''}/>
     </div>
   );
 };

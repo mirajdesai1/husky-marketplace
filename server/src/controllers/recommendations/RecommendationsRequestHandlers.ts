@@ -16,7 +16,14 @@ export interface IUserPublicProfile {
 
 export async function recommendationCreateHandler(requestData: IRecommendation) {
   const collection = await RecommendationsCollection();
-  await collection.insertOne(requestData);
+
+  if ((await collection.findOne<IRecommendation>(requestData)) === null) {
+    await collection.insertOne(requestData);
+    return true;
+  }
+
+  return false;
+  
 }
 
 export async function recommendationsGetHandler(
