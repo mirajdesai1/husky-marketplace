@@ -9,6 +9,7 @@ import YTWatchPartyService, {
   IRecommendation,
 } from '../../api/YTWatchPartyService';
 import { useAuth0 } from '@auth0/auth0-react';
+import YouTubeVideo from '../../components/YouTubeVideo';
 
 const service = new YTWatchPartyService();
 
@@ -18,7 +19,7 @@ const fetchPopularVideosPromise = () => {
   >('/videos', {
     params: {
       chart: 'mostPopular',
-      part: 'snippet',
+      part: 'snippet, contentDetails, statistics',
       maxResults: 20,
     },
   });
@@ -93,69 +94,33 @@ const Home = () => {
         Popular Videos
       </Typography>
       <hr></hr>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          //justifyContent: 'space-around',
-          overflowY: 'scroll',
-          whiteSpace: 'inherit',
-          marginBottom: '32px',
-        }}
-      >
-        {popularVideos.map((searchResult: any) => {
-          return (
-            <div>
-              <Link to={`/video/${searchResult.id}`}>
-                <img
-                  style={{
-                    objectFit: 'cover',
-                    borderRadius: '5%',
-                    marginRight: '30px',
-                  }}
-                  width={300}
-                  height={175}
-                  alt="video"
-                  src={(searchResult as any).snippet.thumbnails.high.url}
-                ></img>
-              </Link>
-            </div>
-          );
-        })}
+      <>
+      <div className="text-start mt-2">
+        <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
+          {popularVideos.map((v) => {
+            return (
+              <li className="list-group-item border-0 col">
+                <YouTubeVideo video={v} />
+              </li>
+            );
+          })}
+        </ul>
       </div>
+    </>
       <Typography variant="h4" textAlign={'left'} fontFamily={'sans-serif'}>
         Recommended Videos
       </Typography>
       <hr></hr>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          //justifyContent: 'space-around',
-          overflowY: 'scroll',
-          whiteSpace: 'inherit',
-        }}
-      >
-        {recommendations.map((recommendation) => {
-            console.log("RECC", recommendation);
-          return (
-            <div>
-              <Link to={`/video/${recommendation.id}`}>
-                <img
-                  style={{
-                    objectFit: 'cover',
-                    borderRadius: '5%',
-                    marginRight: '30px',
-                  }}
-                  width={150}
-                  height={150}
-                  alt="video"
-                  src={recommendation.snippet.thumbnails.high.url}
-                ></img>
-              </Link>
-            </div>
-          );
-        })}
+      <div className="text-start mt-2">
+        <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
+          {recommendations.map((v) => {
+            return (
+              <li className="list-group-item border-0 col">
+                <YouTubeVideo video={v} />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

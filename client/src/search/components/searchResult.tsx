@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import youtubeAPI from '../../api/youtubeAPI';
+import YouTubeVideo from '../../components/YouTubeVideo';
 
 const SearchResult = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -28,28 +29,17 @@ const SearchResult = () => {
   }
 
   return (
-    <div>
-      {searchResults.map((searchResult: any, index) => {
-        return (
-            <div>
-          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <Link to={`/video/${searchResult.id.videoId}`}>
-              <img
-                width="480"
-                height="360"
-                alt="video"
-                src={(searchResult as any).snippet.thumbnails.high.url}
-              ></img>
-            </Link>
-            </div>
-            <div>
-                <h2>{searchResult.snippet.title}</h2>
-            </div>
-            </div>
-          
-        );
-      })}
-    </div>
+    <div className="text-start mt-2">
+        <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
+          {searchResults.map((v) => {
+            return (
+              <li className="list-group-item border-0 col">
+                <YouTubeVideo video={v} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
   );
 };
 
