@@ -3,12 +3,12 @@ import YTWatchPartyService, { IUserProfile } from "../api/YTWatchPartyService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import FriendsTab from "./FriendsTab";
+import LikedVideosTab from "./LikedVideosTab";
 
 const service = new YTWatchPartyService();
 
 function UserProfile({ active = "pending" }) {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
-    useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const [profileDetails, setProfileDetails] = useState<IUserProfile | null>(
     null
   );
@@ -18,12 +18,16 @@ function UserProfile({ active = "pending" }) {
     const fetchProfile = async () => {
       const token = await getAccessTokenSilently();
       const prof = await service.getUserProfile(token);
-      setProfileDetails(prof);
-      setBio(prof.bio);
-    };
 
-    fetchProfile().catch((e) => console.log(e));
-  }, [getAccessTokenSilently, isAuthenticated, loginWithRedirect]);
+      return prof;
+    };
+    fetchProfile()
+      .then((prof) => {
+        setProfileDetails(prof);
+        setBio(prof.bio);
+      })
+      .catch((e) => console.log(e));
+  }, [getAccessTokenSilently]);
 
   const bioSubmit = async () => {
     const token = await getAccessTokenSilently();
@@ -35,7 +39,10 @@ function UserProfile({ active = "pending" }) {
       case "pending":
         return <FriendsTab />;
       case "featured":
-        return <></>;
+        if (profileDetails) {
+          return <LikedVideosTab userId={profileDetails.userId} />;
+        }
+        break;
       default:
         return <></>;
     }
@@ -91,7 +98,7 @@ function UserProfile({ active = "pending" }) {
                   aria-current="page"
                   to={`/profile/${profileDetails.username}/featured`}
                 >
-                  Home
+                  Liked Videos
                 </Link>
               </li>
               <li className="nav-item">

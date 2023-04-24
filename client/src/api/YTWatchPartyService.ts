@@ -24,7 +24,7 @@ export interface IUserProfile {
 export interface IRecommendation {
   fromUsername: string;
   toUsername: string;
-  videoID: string
+  videoID: string;
 }
 
 export default class YTWatchPartyService {
@@ -70,26 +70,23 @@ export default class YTWatchPartyService {
   }
 
   getRecommendationsPromise(token: string) {
-    return (
-      this._axios.get<Array<IRecommendation>>('/api/recommendations', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-    )
+    return this._axios.get<Array<IRecommendation>>("/api/recommendations", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
   }
 
   getVideoPromise(videoID: string) {
-    return (
-      youtubeAPI
-        .get<GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>>('/videos', {
-          params: {
-            id: videoID,
-            part: 'snippet,contentDetails,statistics',
-            maxResults: 1,
-          },
-        })
-    )
+    return youtubeAPI.get<
+      GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>
+    >("/videos", {
+      params: {
+        id: videoID,
+        part: "snippet,contentDetails,statistics",
+        maxResults: 1,
+      },
+    });
   }
-  
+
   async acceptFriendInvite(
     token: string,
     username: string
@@ -105,7 +102,7 @@ export default class YTWatchPartyService {
 
   async sendFriendInvite(
     token: string,
-    username: string,
+    username: string
   ): Promise<IUserProfile | null> {
     return (
       await this._axios.post(
@@ -116,13 +113,31 @@ export default class YTWatchPartyService {
     ).data;
   }
 
-  async deleteFriend(
-    token: string,
-    username: string,
-  ): Promise<void> {
-    await this._axios.delete(
-      `/api/friends/${username}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
+  async deleteFriend(token: string, username: string): Promise<void> {
+    await this._axios.delete(`/api/friends/${username}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  async getLikedVideos(
+    userId: string
+  ): Promise<Array<GoogleApiYouTubeVideoResource>> {
+    const prof = await this._axios.get(
+      `https://${process.env.REACT_APP_AUTH0_DOMAIN}/api/v2/users/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.REACT_APP_AUTH0_MANAGEMENT_TOKEN}`,
+        },
+      }
+    );
+
+    const googleAuth = prof.data.identities[0].access_token;
+    const query = `key=${process.env.REACT_APP_YOUTUBE_API_KEY}&part=snippet,contentDetails,statistics&myRating=like&maxResults=25`;
+    const response = await this._axios.get<
+      GoogleApiYouTubePageInfo<GoogleApiYouTubeVideoResource>
+    >(`https://www.googleapis.com/youtube/v3/videos?${query}`, {
+      headers: { Authorization: `Bearer ${googleAuth}` },
+    });
+    return response.data.items;
   }
 }
