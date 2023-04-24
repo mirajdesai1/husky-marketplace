@@ -88,3 +88,31 @@ export async function friendsSendInviteHandler(
   );
   return await collection.findOne<IUserProfile>({ username: friend2Username });
 }
+
+export async function friendsDeleteHandler(
+  friend1UserId: string,
+  friend2Username: string
+): Promise<void> {
+  const collection = await ProfileCollection();
+
+  let updateObj: Record<string, any> = {
+    friends: friend2Username
+  } 
+
+  const updatedFriend1Prof = (await collection.findOneAndUpdate(
+    {userId: friend1UserId},
+    {$pull: updateObj},
+    {returnDocument: 'after'}
+  )).value
+  
+  if (updatedFriend1Prof) {
+    updateObj = {
+      friends: updatedFriend1Prof.username,
+    }
+    await collection.findOneAndUpdate(
+      {username: friend2Username},
+      {$pull: updateObj},
+      {returnDocument: 'after'}
+    )
+  }
+}
