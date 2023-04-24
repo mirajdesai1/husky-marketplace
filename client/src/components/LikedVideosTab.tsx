@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import YTWatchPartyService, { IUserProfile } from "../api/YTWatchPartyService";
+import YTWatchPartyService from "../api/YTWatchPartyService";
 import YouTubeVideo from "./YouTubeVideo";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const service = new YTWatchPartyService();
 
-function LikedVideosTab({ userId }: { userId: string}) {
+function LikedVideosTab() {
   const [videos, setVideos] = useState<Array<GoogleApiYouTubeVideoResource>>(
     []
   );
