@@ -171,9 +171,8 @@ export default function PrimarySearchAppBar() {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
           </IconButton>
-          <Link to='/' className='text-white'>
+          <Link to='/' className='text-white text-decoration-none'>
             <Typography
               variant="h6"
               noWrap

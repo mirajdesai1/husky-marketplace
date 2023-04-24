@@ -19,7 +19,7 @@ const FriendSection = () => {
       </Typography>
       {friends != null &&
         friends.map((friend, index) => (
-          <Link to={`/profile/${friend.username}`}>
+          <Link className='text-decoration-none' to={`/profile/${friend.username}`}>
             <ListItem key={friend.username} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
