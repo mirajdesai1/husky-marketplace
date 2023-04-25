@@ -14,11 +14,24 @@ const createProfile = async (req: Request, res: Response) => {
   if (await profileGetHandler({ userId })) {
     res.status(200).send("Profile already exists");
   } else {
+    const management_token = (
+      await axios.post(
+        `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+        {
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: process.env.AUTH0_AUDIENCE,
+          grant_type: "client_credentials",
+        },
+        { headers: { "content-type": "application/json" } }
+      )
+    ).data.access_token;
+
     const prof = await axios.get(
       `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${userId}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.AUTH0_MANAGEMENT_TOKEN}`,
+          Authorization: `Bearer ${management_token}`,
         },
       }
     );
@@ -76,7 +89,7 @@ const updateProfile = async (req: Request, res: Response) => {
 
   if (updatedProf) {
     res.status(200).json(updatedProf);
-  } else{
+  } else {
     res.status(404).send("Profile not found");
   }
 };

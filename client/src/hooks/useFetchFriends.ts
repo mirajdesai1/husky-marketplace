@@ -7,19 +7,22 @@ const service = new YTWatchPartyService();
 
 const useFetchFriends = () => {
   const [friends, setFriends] = useState<IUserPublicProfile[] | null>(null);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   useEffect(() => {
     const fetchFriends = async () => {
-      const token = await getAccessTokenSilently();
-      const friendsProfiles = await service.getFriends(token);
-      return friendsProfiles;
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        const friendsProfiles = await service.getFriends(token);
+        return friendsProfiles;
+      }
+      return null;
     };
 
     if (friends === null) {
       fetchFriends().then(resp => setFriends(resp)).catch((e) => console.log(e));
     }
-  }, [getAccessTokenSilently, friends]);
+  }, [getAccessTokenSilently, friends, isAuthenticated]);
 
   return friends;
 };
