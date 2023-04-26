@@ -8,7 +8,7 @@ import useFetchFriends from '../../hooks/useFetchFriends';
 import { useCallback, useState } from 'react';
 import YTWatchPartyService from '../../api/YTWatchPartyService';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Snackbar, Tooltip } from '@mui/material';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,7 +31,7 @@ export default function BasicModal({ videoID }: { videoID: string }) {
   const [open, setOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState('');
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   const handleOpen = () => setOpen(true);
   const handleClose = useCallback(() => setOpen(false), []);
@@ -91,9 +91,11 @@ export default function BasicModal({ videoID }: { videoID: string }) {
           {`Oops! You've already recommended this video to ${selectedFriend}`}
         </Alert>
       </Snackbar>
-      <Button variant="contained" endIcon={<SendIcon />} onClick={handleOpen}>
+      <Tooltip title={!isAuthenticated ? 'Please login to be able to send videos' : ''} >
+      <Button variant="contained" endIcon={<SendIcon />} onClick={handleOpen} disabled={!isAuthenticated}>
         Send
       </Button>
+      </Tooltip>
       <Modal
         open={open}
         onClose={handleClose}
@@ -133,6 +135,7 @@ export default function BasicModal({ videoID }: { videoID: string }) {
             type="button"
             className="btn btn-primary mt-1"
             onClick={recommendToFriend}
+            disabled={!isAuthenticated}
           >
             Recommend
           </button>

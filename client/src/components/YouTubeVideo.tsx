@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 
 function YouTubeVideo({
   video,
+  recommendedBy = null,
 }: {
   video: GoogleApiYouTubeVideoResource | GoogleApiYouTubeSearchResource;
+  recommendedBy?: string | null
 }) {
   if ('statistics' in video) {
     return (
@@ -33,6 +35,9 @@ function YouTubeVideo({
           )}{' '}
           views &middot; {new Date(video.snippet.publishedAt).toDateString()}
         </div>
+        {recommendedBy && <div className="text-muted">
+          {`Recommended by: ${recommendedBy}`}
+          </div>}
       </Link>
     );
   } else {
@@ -59,6 +64,9 @@ function YouTubeVideo({
         <div className="text-muted">
           {new Date(video.snippet.publishedAt).toDateString()}
         </div>
+        {recommendedBy && <div className="text-muted">
+          {`Recommended by: ${recommendedBy}`}
+          </div>}
       </Link>
     );
   }

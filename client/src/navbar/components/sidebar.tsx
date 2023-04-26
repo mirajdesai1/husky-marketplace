@@ -28,24 +28,20 @@ import YTWatchPartyService, {
 import { Link } from 'react-router-dom';
 import useFetchFriends from '../../hooks/useFetchFriends';
 import FriendSection from './friendsSection';
-import { MusicNote, Pets, SentimentVerySatisfied, SportsCricket, SportsEsports } from '@mui/icons-material';
+import {
+  MusicNote,
+  Pets,
+  SentimentVerySatisfied,
+  SportsCricket,
+  SportsEsports,
+} from '@mui/icons-material';
 
 const drawerWidth = 240;
 
 const service = new YTWatchPartyService();
 
 export default function PermanentDrawerLeft() {
-  //const { getAccessTokenSilently } = useAuth0();
-
-  //   useEffect(() => {
-  //     const fetchFriends = async () => {
-  //       const token = await getAccessTokenSilently();
-  //       const friendsProfiles = await service.getFriends(token);
-  //       setFriends(friendsProfiles);
-  //     };
-
-  //     fetchFriends().catch((e) => console.log(e));
-  //   }, [getAccessTokenSilently]);
+  const { isAuthenticated } = useAuth0();
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -75,21 +71,29 @@ export default function PermanentDrawerLeft() {
       >
         <Toolbar />
         <Divider />
-        <FriendSection />
+        {isAuthenticated && <FriendSection />}
         <Divider />
         <List>
           {[
-            { name: 'Hip hop music', id: '0glt670', icon: <MusicNote/> },
-            { name: 'Role-playing video game', id: '0403l3g', icon: <SportsEsports/> },
-            { name: 'Cricket', id: '09xp_', icon: <SportsCricket/> },
-            { name: 'Humor', id: '09kqc', icon: <SentimentVerySatisfied/> },
-            { name: 'Pets', id: '068hy', icon: <Pets/> },
+            { name: 'Hip hop music', id: '0glt670', icon: <MusicNote /> },
+            {
+              name: 'Role-playing video game',
+              id: '0403l3g',
+              icon: <SportsEsports />,
+            },
+            { name: 'Cricket', id: '09xp_', icon: <SportsCricket /> },
+            { name: 'Humor', id: '09kqc', icon: <SentimentVerySatisfied /> },
+            { name: 'Pets', id: '068hy', icon: <Pets /> },
           ].map((category, index) => (
-            <Link className='text-decoration-none' to={`/search/categories/${category.name}`} style={{color: 'black'}}>
+            <Link
+              className="text-decoration-none"
+              to={`/search/categories/${category.name}`}
+              style={{ color: 'black' }}
+            >
               <ListItem key={category.id} disablePadding>
                 <ListItemButton>
                   {category.icon}
-                  <ListItemText className='ms-2' primary={category.name} />
+                  <ListItemText className="ms-2" primary={category.name} />
                 </ListItemButton>
               </ListItem>
             </Link>

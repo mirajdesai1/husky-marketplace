@@ -35,6 +35,10 @@ const Home = () => {
     Array<GoogleApiYouTubeVideoResource>
   >([]);
 
+  const [recommendationsInfo, setRecommendationsInfo] = useState<
+    IRecommendation[]
+  >([]);
+
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   const fetchData = useCallback(async () => {
@@ -49,7 +53,8 @@ const Home = () => {
       ]);
       setPopularVideos(popularVideos.data.items);
 
-      const videoIDs = recommendations.data.map((item) => item.videoID);
+      const recInfos = recommendations.data;
+      const videoIDs = recInfos.map((item) => item.videoID);
 
       const getVideoPromises = videoIDs.map((videoID) =>
         service.getVideoPromise(videoID)
@@ -59,9 +64,17 @@ const Home = () => {
         (item) => item.data.items[0]
       );
 
-      console.log({recommendedVideos});
+      let filteredRecommendationsInfo = [];
+      let filteredRecommendedVideos = [];
+      for (let i = 0; i < recommendedVideos.length; i++) {
+        if (!!recommendedVideos[i]) {
+          filteredRecommendationsInfo.push(recInfos[i]);
+          filteredRecommendedVideos.push(recommendedVideos[i]);
+        }
+      }
 
-      setRecommendations(recommendedVideos.filter(item => !!item));
+      setRecommendationsInfo(filteredRecommendationsInfo);
+      setRecommendations(filteredRecommendedVideos);
     } else {
       const [popularVideos] = await Promise.all([fetchTrendingPromise]);
       setPopularVideos(popularVideos.data.items);
@@ -95,33 +108,41 @@ const Home = () => {
       </Typography>
       <hr></hr>
       <>
-      <div className="text-start mt-2">
-        <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
-          {popularVideos.map((v) => {
-            return (
-              <li className="list-group-item border-0 col">
-                <YouTubeVideo video={v} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </>
-      <Typography variant="h4" textAlign={'left'} fontFamily={'sans-serif'}>
-        Recommended Videos
-      </Typography>
-      <hr></hr>
-      <div className="text-start mt-2">
-        <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
-          {recommendations.map((v) => {
-            return (
-              <li className="list-group-item border-0 col">
-                <YouTubeVideo video={v} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+        <div className="text-start mt-2">
+          <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
+            {popularVideos.map((v) => {
+              return (
+                <li className="list-group-item border-0 col">
+                  <YouTubeVideo video={v} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </>
+
+      {isAuthenticated && (
+        <>
+          <Typography variant="h4" textAlign={'left'} fontFamily={'sans-serif'}>
+            Recommended Videos
+          </Typography>
+          <hr></hr>
+          <div className="text-start mt-2">
+            <ul className="list-group list-group-horizontal flex-fill row row-cols-auto">
+              {recommendations.map((v, i) => {
+                return (
+                  <li className="list-group-item border-0 col">
+                    <YouTubeVideo
+                      video={v}
+                      recommendedBy={recommendationsInfo[i].fromUsername}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
