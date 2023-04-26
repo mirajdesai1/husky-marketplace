@@ -35,13 +35,19 @@ import {
   SportsCricket,
   SportsEsports,
 } from '@mui/icons-material';
+import { useMediaQuery, useTheme } from '@mui/material';
 
-const drawerWidth = 240;
+
 
 const service = new YTWatchPartyService();
 
 export default function PermanentDrawerLeft() {
   const { isAuthenticated } = useAuth0();
+  const theme = useTheme();
+
+  const matches = useMediaQuery('(min-width:600px)');
+
+  const drawerWidth = matches ? 240 : 100;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -93,7 +99,8 @@ export default function PermanentDrawerLeft() {
               <ListItem key={category.id} disablePadding>
                 <ListItemButton>
                   {category.icon}
-                  <ListItemText className="ms-2" primary={category.name} />
+                  {matches &&
+                  <ListItemText className="ms-2" primary={category.name} />}
                 </ListItemButton>
               </ListItem>
             </Link>
